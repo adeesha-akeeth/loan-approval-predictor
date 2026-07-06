@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Bank Loan Approval Checker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+
+    <header>
+        <h1>Bank Loan Approval Checker</h1>
+        <p class="subtitle">
+            Powered by Machine Learning — Random Forest Model
+        </p>
+        <p class="disclaimer">
+            For demonstration purposes only.
+        </p>
+    </header>
+
+    <div class="form-card">
+        <h2>Enter Your Details</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+                <label>Marital Status</label>
+                <select id="married">
+                    <option value="1">Married</option>
+                    <option value="0">Single</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Education</label>
+                <select id="education">
+                    <option value="0">Graduate</option>
+                    <option value="1">Not Graduate</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Number of Dependents</label>
+                <select id="dependents">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3 or more</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Employment Type</label>
+                <select id="self_employed">
+                    <option value="0">Salaried</option>
+                    <option value="1">Self Employed</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Credit History</label>
+                <select id="credit_history">
+                    <option value="1">Good</option>
+                    <option value="0">Poor</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Property Area</label>
+                <select id="property_area">
+                    <option value="2">Urban</option>
+                    <option value="1">Semi-Urban</option>
+                    <option value="0">Rural</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="gender">
+                    <option value="1">Male</option>
+                    <option value="0">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Loan Term</label>
+                <select id="loan_term">
+                    <option value="360">360 months — 30 years</option>
+                    <option value="180">180 months — 15 years</option>
+                    <option value="120">120 months — 10 years</option>
+                    <option value="84">84 months — 7 years</option>
+                    <option value="60">60 months — 5 years</option>
+                    <option value="36">36 months — 3 years</option>
+                    <option value="12">12 months — 1 year</option>
+                </select>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Applicant Monthly Income</label>
+                <div class="input-wrapper">
+                    <span class="currency-prefix">Rs.</span>
+                    <input type="number"
+                           id="applicant_income"
+                           placeholder="e.g. 75,000"
+                           min="0">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label>
+                    Co-applicant Monthly Income
+                    — enter 0 if none
+                </label>
+                <div class="input-wrapper">
+                    <span class="currency-prefix">Rs.</span>
+                    <input type="number"
+                           id="coapplicant_income"
+                           placeholder="0"
+                           min="0"
+                           value="0">
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label>Total Loan Amount Requested</label>
+                <div class="input-wrapper">
+                    <span class="currency-prefix">Rs.</span>
+                    <input type="number"
+                           id="loan_amount"
+                           placeholder="e.g. 5,000,000"
+                           min="1">
+                </div>
+            </div>
+
+        </div>
+
+        <button id="predict-btn" onclick="predict()">
+            Check My Loan Approval
+        </button>
+
+        
+
+    </div>
+
+    <div id="result-card" class="result-card hidden">
+
+        <div id="result-header" class="result-header">
+            <div id="result-icon" class="result-icon"></div>
+            <div id="result-text" class="result-text"></div>
+        </div>
+
+        <div class="probability-section">
+            <div class="prob-label">Approval Probability</div>
+            <div class="prob-bar-track">
+                <div id="probability-bar" class="prob-bar"></div>
+            </div>
+            <div id="probability-text" class="prob-text"></div>
+        </div>
+
+        <div class="factors-section">
+            <h3>Key Factors</h3>
+            <ul id="factors-list"></ul>
+        </div>
+
+        <div class="model-info">
+            Model: Random Forest (Tuned) |
+            AUC Score: 0.84 
+        </div>
+
+    </div>
+
+    <div id="error-card" class="error-card hidden">
+        <p id="error-text"></p>
+    </div>
+
+    <footer>
+        
+        <p>
+            AWS Lambda + API Gateway + S3 + ECR |
+            Random Forest ML Model
+        </p>
+    </footer>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
