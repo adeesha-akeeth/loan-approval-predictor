@@ -1,0 +1,22 @@
+# Model artifacts
+*.pkl
+*.joblib
+
+# AWS credentials
+.aws/
+*.pem
+*.key
+credentials
+.env
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Docker
+*.tar
+
+# OS
+.DS_Store
+Thumbs.db
