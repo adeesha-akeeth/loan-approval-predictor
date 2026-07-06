@@ -41,38 +41,20 @@ Cost:          $0.00
 
 ## Full Architecture Diagram
 
-User Browser
-|
-| visits URL
-v
-S3 Static Website
-(index.html + style.css + app.js)
-|
-| HTTP POST (LKR values)
-| fetch() JavaScript call
-v
-API Gateway HTTP API
-(HTTPS public endpoint)
-(CORS enabled)
-|
-| forwards request
-v
-AWS Lambda
-(Container image from ECR)
-(Python 3.12 + scikit-learn + pandas)
-(512MB RAM, 60s timeout)
-|
-| loads model on cold start
-v
-Amazon S3
-(loan_model.pkl)
-(feature_names.pkl)
-(model_metadata.json)
-|
-| prediction computed
-v
-Response back to browser
-(probability + decision + key factors)
+```markdown
+```mermaid
+graph TD
+    User[User Browser] -->|1. Visits URL| S3[S3 Static Website <br> index.html + style.css + app.js]
+    S3 -->|2. HTTP POST fetch call with LKR values| APIGW[API Gateway HTTP API <br> HTTPS public endpoint / CORS enabled]
+    APIGW -->|3. Forwards request| Lambda[AWS Lambda <br> Container image from ECR]
+    S3_Model[Amazon S3 Bucket] -->|4. Loads model files on cold start| Lambda
+    Lambda -->|5. Computes Prediction| Result[Response back to browser <br> probability + decision + key factors]
+
+    style User fill:#f9f,stroke:#333,stroke-width:2px
+    style S3 fill:#bbf,stroke:#333,stroke-width:2px
+    style APIGW fill:#bfb,stroke:#333,stroke-width:2px
+    style Lambda fill:#fbb,stroke:#333,stroke-width:2px
+    style S3_Model fill:#fdd,stroke:#333,stroke-width:2px
 
 ## AWS Services Used
 
