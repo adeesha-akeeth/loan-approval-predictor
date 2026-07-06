@@ -56,6 +56,7 @@ graph TD
     style Lambda fill:#fbb,stroke:#333,stroke-width:2px
     style S3_Model fill:#fdd,stroke:#333,stroke-width:2px
 
+```
 ## AWS Services Used
 
 | Service     | Purpose                        | Cost          |
