@@ -1,72 +1,138 @@
-# Architecture — Loan Approval Predictor
+# Loan Approval Predictor Architecture
 
-## Why Docker Container Instead of ZIP Layer
+> End-to-end architecture and deployment documentation.
 
-### The Problem
-Initial deployment attempted ZIP-based Lambda layers
-for pandas, scikit-learn, numpy and scipy.
+## Overview
 
-Combined unzipped size: ~400MB
-AWS Lambda ZIP limit:   250MB
+This project is a serverless machine learning web application hosted entirely on AWS. Users submit loan application details through a static website, which invokes an AWS Lambda function via API Gateway to perform inference using a trained Scikit-learn model.
 
-Attempts to reduce size by stripping test files
-broke internal library structure causing
-runtime syntax errors.
+---
 
-### The Solution
-Switched to containerized Lambda using Amazon ECR.
-Container images support up to 10GB — no size constraints.
-Complete unbroken library installations preserved.
+## Architecture Decision Record (ADR)
 
-### Deployment Flow
-CloudShell
--> docker build (Dockerfile)
--> docker push (ECR repository)
--> Lambda updated (aws lambda update-function-code)
--> API Gateway (unchanged)
--> S3 Frontend (unchanged)
+### Decision
 
-### Cost
-ECR free tier: 500MB private storage/month
-Our image:     ~350MB
-Cost:          $0.00
+Deploy the Lambda function as a **Docker container** instead of using a ZIP package with Lambda Layers.
 
-### Future Updates
-1. Edit lambda_function.py
-2. Rebuild image in CloudShell
-3. Push to ECR
-4. Run: aws lambda update-function-code
-   --function-name loan-approval-container
-   --image-uri 951869163850.dkr.ecr.ap-south-1.amazonaws.com/loan-approval:latest
+### Context
 
-## Full Architecture Diagram
+The project depends on:
 
-```markdown
-```mermaid
-graph TD
-    User[User Browser] -->|1. Visits URL| S3[S3 Static Website <br> index.html + style.css + app.js]
-    S3 -->|2. HTTP POST fetch call with LKR values| APIGW[API Gateway HTTP API <br> HTTPS public endpoint / CORS enabled]
-    APIGW -->|3. Forwards request| Lambda[AWS Lambda <br> Container image from ECR]
-    S3_Model[Amazon S3 Bucket] -->|4. Loads model files on cold start| Lambda
-    Lambda -->|5. Computes Prediction| Result[Response back to browser <br> probability + decision + key factors]
+- pandas
+- numpy
+- scipy
+- scikit-learn
 
-    style User fill:#f9f,stroke:#333,stroke-width:2px
-    style S3 fill:#bbf,stroke:#333,stroke-width:2px
-    style APIGW fill:#bfb,stroke:#333,stroke-width:2px
-    style Lambda fill:#fbb,stroke:#333,stroke-width:2px
-    style S3_Model fill:#fdd,stroke:#333,stroke-width:2px
+The combined uncompressed size was approximately **400 MB**, exceeding the AWS Lambda ZIP deployment limit of **250 MB**.
 
+Attempts to reduce package size by stripping files caused runtime import and syntax errors.
+
+### Outcome
+
+A containerized Lambda stored in **Amazon ECR** was adopted.
+
+**Benefits**
+
+- Supports images up to **10 GB**
+- No dependency trimming required
+- Faster, repeatable deployments
+- Production-ready packaging
+
+---
+
+## High-Level Architecture
+
+```text
+                 ┌──────────────────────┐
+                 │     User Browser     │
+                 └──────────┬───────────┘
+                            │
+                            ▼
+                 Amazon S3 Static Website
+          (HTML • CSS • JavaScript Frontend)
+                            │
+                  HTTPS POST (fetch API)
+                            │
+                            ▼
+                  Amazon API Gateway (HTTP)
+                            │
+                            ▼
+           AWS Lambda (Docker Container on ECR)
+        Python 3.12 • Scikit-learn • Pandas
+                            │
+             Loads trained model from Amazon S3
+                            │
+                            ▼
+                 Prediction + Probability
+                            │
+                            ▼
+                 JSON Response to Browser
 ```
-## AWS Services Used
 
-| Service     | Purpose                        | Cost          |
-|-------------|--------------------------------|---------------|
-| ECR         | Docker image registry          | Free (500MB)  |
-| Lambda      | Serverless ML inference        | Free tier     |
-| API Gateway | Public HTTPS endpoint          | Free tier     |
-| S3          | Model storage + static website | Free tier     |
-| CloudShell  | Build and deploy environment   | Free          |
-| IAM         | Role based access control      | Free          |
-| CloudWatch  | Logging and monitoring         | Free tier     |
+---
 
-Total monthly cost: $0.00
+## Deployment Workflow
+
+```text
+Developer
+    │
+    ▼
+AWS CloudShell
+    │
+docker build
+    │
+docker push
+    │
+Amazon ECR
+    │
+aws lambda update-function-code
+    │
+AWS Lambda
+    │
+API Gateway
+    │
+Amazon S3 Website
+```
+
+---
+
+## Deployment Updates
+
+```bash
+aws lambda update-function-code \
+  --function-name loan-approval-container \
+  --image-uri 951869163850.dkr.ecr.ap-south-1.amazonaws.com/loan-approval:latest
+```
+
+---
+
+## AWS Services
+
+| Service | Purpose | Cost |
+|---------|---------|------|
+| Amazon S3 | Static website + ML model storage | Free Tier |
+| AWS Lambda | Serverless inference | Free Tier |
+| Amazon ECR | Docker image registry | Free Tier (500 MB) |
+| Amazon API Gateway | Public HTTPS API | Free Tier |
+| AWS CloudShell | Build environment | Free |
+| AWS IAM | Access management | Free |
+| Amazon CloudWatch | Logs & monitoring | Free Tier |
+
+---
+
+## Estimated Monthly Cost
+
+| Resource | Estimated Cost |
+|----------|---------------:|
+| Entire deployment | **$0.00 (Free Tier)** |
+
+---
+
+## Future Improvements
+
+- CI/CD using GitHub Actions
+- Model versioning
+- Automated Docker image tagging
+- Infrastructure as Code (Terraform/AWS SAM)
+- Monitoring dashboards with CloudWatch
+- HTTPS custom domain
