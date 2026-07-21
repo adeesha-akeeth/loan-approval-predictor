@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bank Loan Approval Checker</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -12,19 +11,14 @@
 
     <header>
         <h1>Bank Loan Approval Checker</h1>
-        <p class="subtitle">
-            Powered by Machine Learning — Random Forest Model
-        </p>
-        <p class="disclaimer">
-            For demonstration purposes only.
-        </p>
+        <p class="subtitle">Powered by Machine Learning — Random Forest Model</p>
+        <p class="disclaimer">For demonstration purposes only.</p>
     </header>
 
     <div class="form-card">
         <h2>Enter Your Details</h2>
 
         <div class="form-grid">
-
             <div class="form-group">
                 <label>Marital Status</label>
                 <select id="married">
@@ -101,25 +95,15 @@
                 <label>Applicant Monthly Income</label>
                 <div class="input-wrapper">
                     <span class="currency-prefix">Rs.</span>
-                    <input type="number"
-                           id="applicant_income"
-                           placeholder="e.g. 75,000"
-                           min="0">
+                    <input type="number" id="applicant_income" placeholder="e.g. 75,000" min="0">
                 </div>
             </div>
 
             <div class="form-group full-width">
-                <label>
-                    Co-applicant Monthly Income
-                    — enter 0 if none
-                </label>
+                <label>Co-applicant Monthly Income — enter 0 if none</label>
                 <div class="input-wrapper">
                     <span class="currency-prefix">Rs.</span>
-                    <input type="number"
-                           id="coapplicant_income"
-                           placeholder="0"
-                           min="0"
-                           value="0">
+                    <input type="number" id="coapplicant_income" placeholder="0" min="0" value="0">
                 </div>
             </div>
 
@@ -127,25 +111,22 @@
                 <label>Total Loan Amount Requested</label>
                 <div class="input-wrapper">
                     <span class="currency-prefix">Rs.</span>
-                    <input type="number"
-                           id="loan_amount"
-                           placeholder="e.g. 5,000,000"
-                           min="1">
+                    <input type="number" id="loan_amount" placeholder="e.g. 5,000,000" min="1">
                 </div>
             </div>
-
         </div>
 
-        <button id="predict-btn" onclick="predict()">
-            Check My Loan Approval
-        </button>
+        <div class="model-notice">
+            <span class="notice-icon">⚠️</span>
+            <div class="notice-content">
+                <strong>Model Note:</strong> This application is powered by a predictive algorithm trained on realistic financial profiles. Entering extreme, highly disparate, or functionally impossible metrics may yield volatile or unexpected results.
+            </div>
+        </div>
 
-        
-
+        <button id="predict-btn" onclick="predict()">Check My Loan Approval</button>
     </div>
 
     <div id="result-card" class="result-card hidden">
-
         <div id="result-header" class="result-header">
             <div id="result-icon" class="result-icon"></div>
             <div id="result-text" class="result-text"></div>
@@ -165,10 +146,8 @@
         </div>
 
         <div class="model-info">
-            Model: Random Forest (Tuned) |
-            AUC Score: 0.84 
+            Model: Random Forest (Tuned) | AUC Score: 0.84 
         </div>
-
     </div>
 
     <div id="error-card" class="error-card hidden">
@@ -176,11 +155,7 @@
     </div>
 
     <footer>
-        
-        <p>
-            AWS Lambda + API Gateway + S3 + ECR |
-            Random Forest ML Model
-        </p>
+        <p>AWS Lambda + API Gateway + S3 + ECR | Random Forest ML Model</p>
     </footer>
 
 </div>
